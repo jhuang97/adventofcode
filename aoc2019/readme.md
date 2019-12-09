@@ -10,3 +10,6 @@ files by day
 6. Day6_UniversalOrbitMap.java
 7. day7.py
 8. day8.nb
+9. day9.py
+
+Days 2, 5, 7, 9 have to do with the Intcode Computer.
