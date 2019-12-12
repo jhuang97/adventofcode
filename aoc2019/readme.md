@@ -13,5 +13,6 @@ files by day
 9. day9.py
 10. Day10_MonitoringStation.java
 11. day11.py, day11_plot.nb
+12. day12.py, day12_lcm.nb
 
 Days 2, 5, 7, 9, 11 have to do with the Intcode Computer.
