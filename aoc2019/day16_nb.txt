@@ -1,0 +1,123 @@
+650^2
+
+422500
+
+baseSeq = {0, 1, 0, -1}
+
+{0, 1, 0, -1}
+
+sig0 = {1, 2, 3, 4, 5, 6, 7, 8};
+
+sig1 = IntegerDigits[
+   5976463579747371805248637671814240834635767681847850359963367005988\
+5748195966091103097769012608550645686932996546030476521264521211192035\
+2313037918684568777179574820023037908975875938451630335890259955092642\
+8293611987443194463411403423186065352497177267068413388467572491842578\
+9232716494769777580613065860450960426147822968107966020797566015799032\
+3732987773689743451438617766395549002068168151803989474979767970523590\
+5185190751893886455967039661666489364199059551130654270572028249402896\
+6984911349389079744726360038030937356245125498836945495984280140199805\
+2501511458580849113624879533899490621082850353189643767998234254660278\
+16115616249496434133896];
+
+siglen = Length@sig0;
+badfft = Table[(Flatten@
+      Table[Flatten@
+        Table[Table[k, {r}], {k, 
+          baseSeq}], {Ceiling[(siglen + 1)/(r*Length[baseSeq])]}])[[
+    2 ;; siglen + 1]],
+   {r, siglen}];
+out = Mod[Abs[badfft.sig0], 10];
+
+MatrixForm@badfft
+
+\!\(
+TagBox[
+RowBox[{"(", "", GridBox[{
+{"1", "0", 
+RowBox[{"-", "1"}], "0", "1", "0", 
+RowBox[{"-", "1"}], "0"},
+{"0", "1", "1", "0", "0", 
+RowBox[{"-", "1"}], 
+RowBox[{"-", "1"}], "0"},
+{"0", "0", "1", "1", "1", "0", "0", "0"},
+{"0", "0", "0", "1", "1", "1", "1", "0"},
+{"0", "0", "0", "0", "1", "1", "1", "1"},
+{"0", "0", "0", "0", "0", "1", "1", "1"},
+{"0", "0", "0", "0", "0", "0", "1", "1"},
+{"0", "0", "0", "0", "0", "0", "0", "1"}
+},
+GridBoxAlignment->{
+      "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+       "Rows" -> {{Baseline}}, "RowsIndexed" -> {}, "Items" -> {}, 
+       "ItemsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}, "Items" -> {}, 
+       "ItemsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]\)
+
+runbadfft2[sig_] :=
+ Module[{siglen = Length@sig, badfft},
+  badfft = 
+   Table[(Flatten@
+        Table[Flatten@
+          Table[Table[k, {r}], {k, 
+            baseSeq}], {Ceiling[(siglen + 1)/(r*Length[baseSeq])]}])[[
+      2 ;; siglen + 1]].sig,
+    {r, siglen}];
+  Mod[Abs[badfft], 10]
+  ]
+
+runbadfft2[sig0]
+
+{4, 8, 2, 2, 6, 1, 5, 8}
+
+Nest[runbadfft2, sig0, 4]
+
+{0, 1, 0, 2, 9, 4, 9, 8}
+
+Timing@Nest[runbadfft2, sig1, 100][[1 ;; 8]]
+
+{19.265625, {6, 3, 4, 8, 3, 7, 5, 8}}
+
+Timing@Nest[runbadfft2, sig1, 100][[326 ;; 336]]
+
+{19.343750, {4, 2, 0, 9, 0, 3, 5, 2, 4, 0, 1}}
+
+test1 = Nest[runbadfft2, sig1, 100];
+
+sig1p2 = sig1[[Length[sig1]/2 + 1 ;;]];
+
+(Reverse@Nest[Mod[Accumulate[#], 10] &, Reverse@sig1p2, 100])[[1 ;; 8]]
+
+{4, 2, 0, 9, 0, 3, 5, 2}
+
+Reverse@Nest[Mod[Accumulate[#], 10] &, Reverse@{5, 6, 7, 8}, 4]
+
+{9, 4, 9, 8}
+
+test1[[Length[sig1]/2 + 1 ;; Length[sig]/2 + 9]]
+
+{4, 2, 0, 9, 0, 3, 5, 2, 4}
+
+offset = 5976463
+
+5976463
+
+o2 = offset - 650*10000/2
+
+2726463
+
+res = Reverse@
+   Nest[Mod[Accumulate[#], 10] &, Reverse@Flatten@Table[sig1, {5000}],
+     100];
+
+res[[o2 + 1 ;; o2 + 8]]
+
+{9, 6, 0, 9, 9, 5, 5, 1}

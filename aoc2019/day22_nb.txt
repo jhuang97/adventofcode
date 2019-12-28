@@ -1,0 +1,263 @@
+dealInc[list_, inc_] := 
+ Permute[list, 
+  1 + Table[Mod[3*k, Length[list]], {k, 0, Length[list] - 1}]]
+
+cut[list_, inc_] := 
+ Permute[list, 
+  1 + (Mod[Range[0, Length[list] - 1] - inc, Length[list]])]
+
+dealInc[Range[0, 9], 3]
+
+{0, 7, 4, 1, 8, 5, 2, 9, 6, 3}
+
+cut[Range[0, 9], -4]
+
+{6, 7, 8, 9, 0, 1, 2, 3, 4, 5}
+
+pDealInc[len_, inc_] := 1 + Table[Mod[inc*k, len], {k, 0, len - 1}]
+
+pCut[len_, inc_] := 1 + Mod[Range[0, len - 1] - inc, len]
+
+pRev[len_] := Range[len, 1, -1]
+
+p1 = pDealInc[10, 3]
+
+{1, 4, 7, 10, 3, 6, 9, 2, 5, 8}
+
+p2 = pCut[10, -4]
+
+{5, 6, 7, 8, 9, 10, 1, 2, 3, 4}
+
+p3 = PermutationProduct @@ {p1, p2}
+
+{5, 8, 1, 4, 7, 10, 3, 6, 9, 2}
+
+Permute[Range[0, 9], p3]
+
+{2, 9, 6, 3, 0, 7, 4, 1, 8, 5}
+
+Permute[Range[0, 9], 
+ PermutationProduct @@ {pCut[10, 6], pDealInc[10, 7], pRev[10]}]
+
+{3, 0, 7, 4, 1, 8, 5, 2, 9, 6}
+
+n = 97;
+p1 = pDealInc[n, 3];
+p2 = pCut[n, -4];
+p3 = pRev[n];
+p4 = PermutationProduct @@ {p1, p2, p3, p2, p3, p2, p1, p1, p3}
+
+{61, 34, 7, 77, 50, 23, 93, 66, 39, 12, 82, 55, 28, 1, 71, 44, 17, \
+87, 60, 33, 6, 76, 49, 22, 92, 65, 38, 11, 81, 54, 27, 97, 70, 43, \
+16, 86, 59, 32, 5, 75, 48, 21, 91, 64, 37, 10, 80, 53, 26, 96, 69, \
+42, 15, 85, 58, 31, 4, 74, 47, 20, 90, 63, 36, 9, 79, 52, 25, 95, 68, \
+41, 14, 84, 57, 30, 3, 73, 46, 19, 89, 62, 35, 8, 78, 51, 24, 94, 67, \
+40, 13, 83, 56, 29, 2, 72, 45, 18, 88}
+
+str = "deal into new stack
+  cut -2
+  deal with increment 7
+  cut 8
+  cut -4
+  deal with increment 7
+  cut 3
+  deal with increment 9
+  deal with increment 3
+  cut -1";
+strs = StringSplit[str, "\n"];
+
+getNum[str_] := ToExpression[StringSplit[str][[-1]]]
+
+makePermute[len_, str_] := 
+ If[Length@StringPosition[str, "cut"] > 0, pCut[len, getNum@str],
+  If[Length@StringPosition[str, "deal with increment"] > 0, 
+   pDealInc[len, getNum@str], pRev[len]]
+  ]
+
+perms = makePermute[10, #] & /@ strs; Permute[Range[0, 9], 
+ PermutationProduct @@ perms]
+
+{9, 2, 5, 8, 1, 4, 7, 0, 3, 6}
+
+str = "cut 8808
+  deal with increment 59
+  deal into new stack
+  deal with increment 70
+  cut -5383
+  deal with increment 4
+  deal into new stack
+  cut 9582
+  deal with increment 55
+  cut -355
+  deal with increment 61
+  deal into new stack
+  cut -6596
+  deal with increment 8
+  cut 4034
+  deal with increment 37
+  cut -8183
+  deal with increment 16
+  cut 9529
+  deal with increment 24
+  cut -7751
+  deal with increment 15
+  cut -8886
+  deal with increment 17
+  deal into new stack
+  cut -1157
+  deal with increment 74
+  cut -6960
+  deal with increment 49
+  cut 9032
+  deal with increment 47
+  cut 8101
+  deal with increment 59
+  cut -8119
+  deal with increment 35
+  cut -2017
+  deal with increment 10
+  cut -4431
+  deal with increment 47
+  cut 5712
+  deal with increment 18
+  cut 4424
+  deal with increment 69
+  cut 5382
+  deal with increment 40
+  cut -4266
+  deal with increment 58
+  cut -8911
+  deal with increment 24
+  cut 8231
+  deal with increment 74
+  cut -2055
+  deal into new stack
+  cut -1308
+  deal with increment 31
+  deal into new stack
+  deal with increment 18
+  cut 4815
+  deal with increment 5
+  deal into new stack
+  cut 1044
+  deal with increment 75
+  deal into new stack
+  deal with increment 13
+  cut 177
+  deal into new stack
+  deal with increment 28
+  cut 5157
+  deal with increment 31
+  deal into new stack
+  cut -8934
+  deal with increment 50
+  cut 4183
+  deal with increment 50
+  cut 1296
+  deal with increment 5
+  cut -5162
+  deal with increment 52
+  deal into new stack
+  cut -5207
+  deal with increment 30
+  cut -2767
+  deal with increment 71
+  deal into new stack
+  cut 5671
+  deal with increment 67
+  cut 4818
+  deal with increment 35
+  cut 9234
+  deal with increment 58
+  cut -8832
+  deal with increment 72
+  cut 1289
+  deal with increment 55
+  cut -8444
+  deal into new stack
+  deal with increment 19
+  cut -5512
+  deal with increment 29
+  cut 3680";
+strs = StringSplit[str, "\n"];
+
+perms = makePermute[10007, #] & /@ strs;
+permProd = PermutationProduct @@ perms;
+shuffled = Permute[Range[0, 10006], permProd];
+
+Tally@Differences@permProd
+
+{{-1552, 8454}, {8455, 1552}}
+
+(*looks very periodic*)
+
+Position[shuffled, 2019] - 1
+
+{{6326}}
+
+PrimeQ[10007]
+
+True
+
+PrimeQ[119315717514047]
+
+True
+
+PrimeQ[101741582076661]
+
+True
+
+(* end part 1, begin part 2 *)
+
+(* all permutations in this problem can be represented by some (a,d), \
+a = initial term, d = difference *)
+
+adDeal[k_] := {0, k}; adCut[k_] := {-k, 1}; adRev[k_] := {-1, -1};
+
+adCombine[first_, second_] := {second[[1]] + first[[1]]*second[[2]], 
+  first[[2]]*second[[2]]}
+
+makeAdPermute[str_] := 
+ If[Length@StringPosition[str, "cut"] > 0, adCut[getNum@str],
+  If[Length@StringPosition[str, "deal with increment"] > 0, 
+   adDeal[getNum@str], adRev[len]]
+  ]
+
+adSquare[ad_] := adCombine[ad, ad]
+
+adAll = Fold[Mod[adCombine[#1, #2], 10007] &, makeAdPermute /@ strs]
+
+{7623, 8455}
+
+(7623 + 8455) - 10007 + 1
+
+6072
+
+permProd[[1 ;; 2]]
+
+{7624, 6072}
+
+nBigDeck = 119315717514047;
+
+adAll = Fold[Mod[adCombine[#1, #2], nBigDeck] &, makeAdPermute /@ strs]
+
+{102500543381881, 44693867074464}
+
+nTimes = 101741582076661;
+
+digits = First /@ Position[Reverse@IntegerDigits[nTimes, 2], 1]
+
+{1, 3, 5, 6, 7, 8, 10, 12, 15, 16, 17, 18, 20, 21, 23, 24, 26, 27, \
+28, 32, 36, 40, 43, 44, 45, 47}
+
+adPows = NestList[Mod[adSquare[#], nBigDeck] &, adAll, Max[digits]];
+
+powsToAdd = adPows[[digits]];
+
+adAll2 = Fold[Mod[adCombine[#1, #2], nBigDeck] &, powsToAdd]
+
+{74044378693107, 19672439186889}
+
+Mod[PowerMod[adAll2[[2]], -1, nBigDeck]*(2020 - adAll2[[1]]), nBigDeck]
+
+40522432670594
