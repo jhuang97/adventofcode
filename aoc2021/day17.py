@@ -1,3 +1,5 @@
+# this problem feels a lot like a project euler problem - do some math to limit your search space before searching and accumulating some value as an answer...
+
 import parse
 
 file1 = open('day_17_input.txt', 'r')
