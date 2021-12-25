@@ -1,0 +1,13 @@
+w=x=y=z= 0
+
+inp w
+
+x = (z mod 26) + c1
+
+either do nothing or z //= 26
+
+if x != w
+	z *= 26
+	z += w + c2 (always positive)
+
+want z = 0 at the end
