@@ -5,16 +5,38 @@ file1 = open('day13_in.txt', 'r')
 parts = file1.read().strip().split('\n\n')
 
 
+def parse(s):
+    if s.isnumeric():
+        return int(s)
+    elif s == '[]':
+        return []
+    elif s[0] == '[' and s[-1] == ']':
+        level = 0
+        s_idx = [1]
+        e_idx = []
+        for k in range(1, len(s)-1):
+            if s[k] == '[':
+                level += 1
+            elif s[k] == ']':
+                level -= 1
+            elif s[k] == ',' and level == 0:
+                e_idx.append(k)
+                s_idx.append(k+1)
+        e_idx.append(len(s)-1)
+        return [parse(s[si:ei]) for si, ei in zip(s_idx, e_idx)]
+    print('oh no', s)
+
+
 @total_ordering
 class Packet:
     def __init__(self, s):
         self.s = s
 
     def __eq__(self, other):
-        return right_order(eval(self.s), eval(other.s)) is None
+        return right_order(parse(self.s), parse(other.s)) is None
 
     def __lt__(self, other):
-        return right_order(eval(self.s), eval(other.s))
+        return right_order(parse(self.s), parse(other.s))
 
 
 def compare3(a, b):
@@ -51,7 +73,7 @@ def right_order(a, b):
 total = 0
 for pidx, part in enumerate(parts):
     lines = part.splitlines()
-    packets = [eval(l) for l in lines]
+    packets = [parse(l) for l in lines]
     # print(pidx+1, right_order(packets[0], packets[1]))
     if right_order(packets[0], packets[1]):
         total += pidx+1
