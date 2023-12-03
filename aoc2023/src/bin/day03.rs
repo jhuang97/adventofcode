@@ -48,9 +48,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         for pos_n in num_neighbors_pos(pos, num) {
             if let Some(symbol) = symbols.get(&pos_n) {
                 if *symbol == '*' {
-                    gear_neighbors.entry(pos_n)
-                        .and_modify(|e| e.push(*num))
-                        .or_insert(vec![*num]);
+                    (*gear_neighbors.entry(pos_n).or_insert(Vec::new())).push(*num);
                 }
             }
         }
