@@ -77,19 +77,6 @@ pub fn total_load(grid: &Vec<Vec<char>>) -> i32 {
     total
 }
 
-pub fn encode_state(grid: &Vec<Vec<char>>) -> Vec<u8> {
-    let mut v = Vec::new();
-    for r in 0..grid.len() {
-        for c in 0..grid.len() {
-            if grid[r][c] == 'O' {
-                v.push(r as u8);
-                v.push(c as u8);
-            }
-        }
-    }
-    v
-}
-
 fn main() -> Result<(), Box<dyn Error>> {
     let input = fs::read_to_string("input14.txt")?;
     // let input = fs::read_to_string("test14.txt")?;
@@ -107,24 +94,22 @@ fn main() -> Result<(), Box<dyn Error>> {
     dbg!(load1);
 
     let mut grid2 = grid.clone();
-    let mut states: Vec<Vec<u8>> = vec![encode_state(&grid2)];
+    let mut history: Vec<Vec<Vec<char>>> = vec![grid2.clone()];
     let mut n = 0;
     loop {
         spin_cycle(&mut grid2);
         n += 1;
-        let new_state = encode_state(&grid2);
-        if !states.contains(&new_state) {
-            states.push(encode_state(&grid2));
+        if !history.contains(&grid2) {
+            history.push(grid2.clone());
         } else {
             break;
         }
     }
-    let rep_state = encode_state(&grid2);
-    let n0 = (&states).iter().position(|s| *s == rep_state).unwrap();
+    let n0 = (&history).iter().position(|s| *s == grid2).unwrap();
     let period = n - n0;
     let n_match = (1000000000 - n0) % period + n0;
-    let state_match = &states[n_match];
-    let load2: i32 = state_match.chunks(2).map(|coords| nr as i32 - coords[0] as i32).sum();
+    let grid_match = &history[n_match];
+    let load2: i32 = total_load(grid_match);
     dbg!(load2);
 
     Ok(())
@@ -138,4 +123,17 @@ pub fn print_grid(grid: &Vec<Vec<char>>) {
         }
         println!();
     }
+}
+
+pub fn encode_state(grid: &Vec<Vec<char>>) -> Vec<u8> {
+    let mut v = Vec::new();
+    for r in 0..grid.len() {
+        for c in 0..grid.len() {
+            if grid[r][c] == 'O' {
+                v.push(r as u8);
+                v.push(c as u8);
+            }
+        }
+    }
+    v
 }
