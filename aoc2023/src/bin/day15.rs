@@ -32,10 +32,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         if let Some((label, n_str)) = instr.split_once('=') {
             let focal_length: u32 = n_str.parse()?;
             let idx = get_hash(label);
-            if let Some(lens_idx) = boxes[idx as usize].iter().position(|x| x.label == label) {
-                boxes[idx as usize][lens_idx].focal_length = focal_length;
+            let b = &mut boxes[idx as usize];
+            if let Some(lens_idx) = b.iter().position(|x| x.label == label) {
+                b[lens_idx].focal_length = focal_length;
             } else {
-                boxes[idx as usize].push(Lens {label: label.to_owned(), focal_length});
+                b.push(Lens {label: label.to_owned(), focal_length});
             }
         } else {
             let (label, _) = instr.split_once('-').unwrap();
@@ -45,8 +46,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let mut total2 = 0;
-    for ib in 0..256 {
-        for (il, lens) in boxes[ib as usize].iter().enumerate() {
+    for (ib, b) in boxes.iter().enumerate() {
+        for (il, lens) in b.iter().enumerate() {
             total2 += (ib + 1) * (il + 1) * (lens.focal_length as usize);
         }
     }
