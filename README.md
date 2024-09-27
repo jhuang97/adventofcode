@@ -1,2 +1,3 @@
 # adventofcode
-Newton made me do this
+
+My solutions to Advent of Code problems.
